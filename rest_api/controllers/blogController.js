@@ -45,7 +45,7 @@ const addBlog = async (req, res) => {
         const results = await Blog.query(syntax, [title, content]);
 
         res.status(201).json({
-            message: 'Blogs Added!'
+            message: 'Blogs Added'
         })
     }catch(err){
         res.status(500).json({message: err.message})
