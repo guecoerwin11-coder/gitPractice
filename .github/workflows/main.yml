@@ -1,26 +1,25 @@
-# My Awesome CI/CD Pipeline Fix
 name: Node.js CI/CD Pipeline
 
-# This triggers the robot every time you push code or open a Pull Request
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
 
+# Global settings for the whole runner machine
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true # Bypasses the Node 20 deprecation warning safely
+
 jobs:
   run-tests:
-    runs-on: ubuntu-latest # The free virtual machine from 
+    runs-on: ubuntu-latest 
 
-
-
-    # Spin up a temporary Postgres database in the cloud for your tests!
     services:
       postgres:
         image: postgres:15
         env:
           POSTGRES_DB: my_app_test
-          POSTGRES_PASSWORD: your_password # Make sure this matches your local fallback password!
+          POSTGRES_PASSWORD: your_password 
           POSTGRES_USER: postgres
         ports:
           - 5432:5432
@@ -31,21 +30,20 @@ jobs:
           --health-retries 5
 
     steps:
-      # Step A: Copy your project files into the cloud machine
       - name: Checkout project code
         uses: actions/checkout@v4
 
-      # Step B: Install Node.js version 20
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24' # Upgraded to Node 24 to match the cloud runner rules
           cache: 'npm'
+          cache-dependency-path: './rest_api/package-lock.json' # Points the cache tracker to your subfolder
 
-      # Step C: Fast install all your project packages
       - name: Install packages
         run: npm ci
+        working-directory: ./rest_api # Force-tells the robot to go inside the rest_api folder
 
-      # Step D: Run your 6 automated Jest tests!
       - name: Execute Jest Test Suite
         run: npm test
+        working-directory: ./rest_api # Force-tells the robot to go inside the rest_api folder
