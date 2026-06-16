@@ -18,7 +18,7 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_DB: my_app_test
+          POSTGRES_DB: test_blogs
           POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
           POSTGRES_USER: postgres
         ports:
